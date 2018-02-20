@@ -1,0 +1,127 @@
+VERSION: 1.1
+#Remove all wrong machine from the database (when loaded first)
+REMOVE_MACHINE_WRONG: false
+Database:
+  #types: [SQLITE],[MYSQL]
+  TYPE: SQLITE
+  MYSQL:
+    HOST: localhost
+    USERNAME: root
+    PASSWORD: root
+    DB: arenax1
+machines:
+#Obs: do not overflow the stack limit:
+#ex: 128 diamonds =
+#diamond: 64
+#diamond: 64
+#Obs2: 32 eggs:
+#egg: 16
+#egg: 16
+#machine type: [fuel, ingredient] for now
+  "ouro":
+    price: 4000
+    design:
+      wall: gold_block
+      separator: obsidian
+    build:
+      diamond: 32
+      obsidian: 8
+      gold_block: 15
+      iron_ingot: 8
+    produces:
+      gold_ingot: 400
+    fuels:
+      coal:
+        burn: 800
+        speed: 1.5
+      coal_block:
+        burn: 7200
+        speed: 2.5
+      wood:
+        burn: 150
+        speed: 0.8
+  "esqueleto":
+    price: 4000
+    design:
+      wall: mossy_cobblestone
+      separator: iron_block
+    build:
+      stone: 64
+      iron_block: 20
+    produces:
+      bone: 50
+      arrow: 50
+    fuels:
+      coal:
+        burn: 800
+        speed: 1.5
+      coal_block:
+        burn: 7200
+        speed: 2.5
+      wood:
+        burn: 150
+        speed: 0.8
+  "blaze":
+    price: 4000
+    design:
+      wall: netherrack
+      separator: gold_block
+    build:
+      stone: 64
+      gold_block: 32
+      netherrack: 64
+    produces:
+      blaze_rod: 600
+    fuels:
+      coal:
+        burn: 800
+        speed: 1.5
+      coal_block:
+        burn: 7200
+        speed: 2.5
+      wood:
+        burn: 150
+        speed: 0.8
+  "macerador":
+    type: ingredient
+    price: 6000
+    design:
+      wall: cobblestone
+      separator: iron_block
+    build:
+      stone: 64
+      dirt: 64
+      iron_ingot: 32
+      diamond: 16
+      redstone: 64
+    produces:
+      iron_ingot:
+        quantity: 2
+        with: iron_ore
+        fuel: 200
+      gold_ingot:
+        quantity: 2
+        with: gold_ore
+        fuel: 200
+      diamond:
+        quantity: 4
+        with: diamond_ore
+        fuel: 800
+      emerald:
+        quantity: 3
+        with: emerald_ore
+        fuel: 800
+      quartz:
+        quantity: 8
+        with: quartz_ore
+        fuel: 300
+    fuels:
+      coal:
+        burn: 800
+        speed: 0.8
+      coal_block:
+        burn: 7200
+        speed: 0.8
+      wood:
+        burn: 150
+        speed: 0.6

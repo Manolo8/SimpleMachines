@@ -1,0 +1,83 @@
+
+#Renomeie esse arquivo para book.txt para torna-lo padrão!
+#Para adicionar a tradução de minérios:
+#[material-NOME]
+#Nome customizável
+#[end]
+
+[material-gold_ore]
+Minério de ouro
+[end]
+
+[material-diamond]
+Diamante
+[end]
+
+[material-arrow]
+Flexa
+[end]
+
+[material-bone]
+Osso
+[end]
+
+[material-coal]
+Carvão
+[end]
+
+[material-diamond_ore]
+Minério de diamante
+[end]
+
+#Tudo que está abaixo não pode ser removido, só alterado
+[formatter-cost]
+&c-> {material} {quantity}
+[end]
+
+[formatter-production_fuel]
+&c->{material}
+&cA cada {ticks} ticks
+[end]
+
+[formatter-production_ingredient]
+&c->{material}
+&cCom: {with}
+&cA cada {ticks} ticks
+&a-------------------
+[end]
+
+[formatter-fuel]
+&c-> {material} {speed}x
+&bQueima por {ticks}
+&a-------------------
+[end]
+
+[lore-x]
+&aSimpleMachines
+{cost}
+[end]
+
+[page-0]
+&d&l--{name}--
+&aCusto do livro:
+{cost}
+&aClique em um bloco de
+ferro para iniciar a
+construção da máquina!
+[end]
+
+[page-1]
+&a&l----Produção:----
+{production}&aVá para a próxima
+página para ver os
+combustíveis!
+[end]
+
+[page-2]
+&a&l--Combustíveis---
+{fuel}
+[end]
+
+[page-3]
+FIM
+[end]

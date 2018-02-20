@@ -1,0 +1,16 @@
+author: Manolo8
+main: com.github.manolo8.simplemachines.SimpleMachines
+name: SimpleMachines
+version: 1.2
+commands:
+  machine:
+    aliases: [machines,maquinas,maquina]
+    permission: machines.user
+    usage: |
+      §a/<command> comprar <name>
+      §a/<command> listar
+permissions:
+  machines.user:
+    default: true
+  machines.buy.*:
+    default: true

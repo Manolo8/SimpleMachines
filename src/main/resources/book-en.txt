@@ -1,0 +1,81 @@
+#To change material name use
+#[material-NAME_OF_MATERIAL]
+#new name
+#[end]
+
+[material-gold_ore]
+Gold Ore
+[end]
+
+[material-diamond]
+Diamond
+[end]
+
+[material-arrow]
+Arrow
+[end]
+
+[material-bone]
+Bone
+[end]
+
+[material-coal]
+Coal
+[end]
+
+[material-diamond_ore]
+Diamond Ore
+[end]
+
+#Only change the ones below (dont remove)
+[formatter-cost]
+&c-> {material} {quantity}
+[end]
+
+[formatter-production_fuel]
+&c->{material}
+&cEach {ticks} ticks
+[end]
+
+[formatter-production_ingredient]
+&c->{material}
+&cWith: {with}
+&cUse {ticks} fuel
+&a-------------------
+[end]
+
+[formatter-fuel]
+&c-> {material} {speed}x
+&bBurn for {ticks}
+&a-------------------
+[end]
+
+[lore-x]
+&aSimpleMachines
+{cost}
+[end]
+
+[page-0]
+&d&l--{name}--
+&aBook cost:
+{cost}
+&aClick on an iron
+block to start
+building the machine
+[end]
+
+[page-1]
+&a&l----Production:----
+{production}&aGo to the next
+page to see the
+fuels!
+[end]
+
+[page-2]
+&a&l--Fuels---
+{fuel}
+[end]
+
+[page-3]
+&c&lEnd
+[end]

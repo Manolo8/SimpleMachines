@@ -133,7 +133,6 @@ public class BookFactory {
                     .build();
             StringBuilder builder2 = new StringBuilder();
             int lines = 0;
-            char lc = '.';
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
 

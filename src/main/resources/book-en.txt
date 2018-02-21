@@ -50,6 +50,12 @@ Diamond Ore
 &a-------------------
 [end]
 
+[formatter-solar_fuel]
+&c-> {time} {speed}x
+&bGera {ticks}/tick
+&a-------------------
+[end]
+
 [lore-x]
 &aSimpleMachines
 {cost}

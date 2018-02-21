@@ -19,6 +19,7 @@ machines:
 #egg: 16
 #machine type: [fuel, ingredient] for now
   "ouro":
+    type: fuel
     price: 4000
     design:
       wall: gold_block
@@ -41,6 +42,7 @@ machines:
         burn: 150
         speed: 0.8
   "esqueleto":
+    type: fuel
     price: 4000
     design:
       wall: mossy_cobblestone
@@ -62,6 +64,7 @@ machines:
         burn: 150
         speed: 0.8
   "blaze":
+    type: fuel
     price: 4000
     design:
       wall: netherrack
@@ -125,3 +128,21 @@ machines:
       wood:
         burn: 150
         speed: 0.6
+  "solar":
+    type: solar
+    price: 10000
+    design:
+      wall: iron_block
+      separator: lapis_block
+    build:
+      stone: 64
+      iron_block: 32
+      lapis_block: 9
+    produces:
+      coal: 200
+      wood: 200
+      iron_ore: 200
+      gold_ore: 200
+    fuels: #por tick - 1 segundo = 20 ticks
+      night: 0.4
+      day: 1.1

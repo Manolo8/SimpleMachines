@@ -1,7 +1,7 @@
 author: Manolo8
 main: com.github.manolo8.simplemachines.SimpleMachines
 name: SimpleMachines
-version: 1.2
+version: 1.3
 commands:
   machine:
     aliases: [machines,maquinas,maquina]

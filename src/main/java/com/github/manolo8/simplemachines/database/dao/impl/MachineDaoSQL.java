@@ -6,11 +6,13 @@ import com.github.manolo8.simplemachines.database.dao.ChunkIDDao;
 import com.github.manolo8.simplemachines.database.dao.MachineDao;
 import com.github.manolo8.simplemachines.domain.fuel.FuelMachine;
 import com.github.manolo8.simplemachines.exception.DataBaseException;
+import com.github.manolo8.simplemachines.model.BluePrint;
 import com.github.manolo8.simplemachines.model.ChunkID;
 import com.github.manolo8.simplemachines.model.Machine;
-import com.github.manolo8.simplemachines.utils.MachineData;
+import com.github.manolo8.simplemachines.service.BluePrintService;
 import com.github.manolo8.simplemachines.utils.SimpleLocation;
 import com.github.manolo8.simplemachines.utils.replace.Replace;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 
 import java.sql.Connection;
@@ -29,9 +31,11 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
     private final Replace selectQuery = new Replace("SELECT * FROM machines WHERE chunkX={x} AND chunkZ={z} AND world='{world}'").compile();
     private final String selectChunkId = "SELECT chunkX,chunkZ,world,COUNT(uuid) as quantity FROM machines GROUP BY chunkX,chunkZ";
     private final DataBaseBuild build;
+    private final BluePrintService bluePrintService;
 
-    public MachineDaoSQL(DataBaseBuild build) throws DataBaseException {
+    public MachineDaoSQL(DataBaseBuild build, BluePrintService bluePrintService) throws DataBaseException {
         this.build = build;
+        this.bluePrintService = bluePrintService;
         try {
             Connection connection = build.getConnection();
             Statement statement = connection.createStatement();
@@ -74,9 +78,9 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
     }
 
     @Override
-    public List<MachineData> loadFromChunk(int x, int z, UUID world) {
+    public List<Machine> loadFromChunk(int x, int z, UUID world) {
         try {
-            List<MachineData> machines = new ArrayList<>();
+            List<Machine> machines = new ArrayList<>();
 
             Connection connection = build.getConnection();
             Statement statement = connection.createStatement();
@@ -152,6 +156,8 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
                         .setValue("speed", ((FuelMachine) machine).getSpeed())
                         .setValue("burningTime", ((FuelMachine) machine).getBurningTime());
 
+            System.out.println(updateQuery);
+
             statement.executeUpdate(updateQuery.build());
 
             statement.close();
@@ -179,6 +185,8 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
                             .setValue("speed", ((FuelMachine) machine).getSpeed())
                             .setValue("burningTime", ((FuelMachine) machine).getBurningTime());
 
+                System.out.println(updateQuery);
+
                 statement.executeUpdate(updateQuery.build());
             }
 
@@ -205,21 +213,25 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
         }
     }
 
-    private MachineData machineFromResultSet(ResultSet result) throws SQLException {
+    private Machine machineFromResultSet(ResultSet result) throws SQLException {
 
-        MachineData machine = new MachineData();
+        String bluePrintName = result.getString("bluePrintName");
+        BluePrint bluePrint = bluePrintService.getBluePrint(bluePrintName);
 
-        machine.setBluePrintName(result.getString("bluePrintName"));
+        Machine machine = bluePrint.newInstance();
         machine.setBase(SimpleLocation.fromString(result.getString("base")));
         machine.setFace(BlockFace.valueOf(result.getString("facing")));
         machine.setChunkX(result.getInt("chunkX"));
         machine.setChunkZ(result.getInt("chunkZ"));
-        machine.setBurningTime(result.getDouble("burningTime"));
-        machine.setSpeed(result.getDouble("speed"));
         machine.setOwner(UUID.fromString(result.getString("uuid")));
-        machine.setWorld(UUID.fromString(result.getString("world")));
+        machine.setWorld(Bukkit.getWorld(UUID.fromString(result.getString("world"))));
         machine.setUuid(UUID.fromString(result.getString("uuid")));
         machine.setAvailable(result.getDouble("available"));
+
+        if (machine instanceof FuelMachine) {
+            ((FuelMachine) machine).setBurningTime(result.getDouble("burningTime"));
+            ((FuelMachine) machine).setSpeed(result.getDouble("speed"));
+        }
 
         return machine;
     }

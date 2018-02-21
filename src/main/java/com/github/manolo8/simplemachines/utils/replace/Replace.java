@@ -53,7 +53,7 @@ public class Replace {
             }
             mainBuilder.append(c);
         }
-        contents.add(new Content("end", mainBuilder.toString(), ""));
+        contents.add(new Content("end", mainBuilder.toString(), ";"));
         //Libera a memória
         template = null;
         return this;

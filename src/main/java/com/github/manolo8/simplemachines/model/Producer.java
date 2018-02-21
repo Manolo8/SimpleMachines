@@ -8,8 +8,11 @@ public class Producer<T extends Product> {
     protected Random random;
     protected List<T> products;
 
-    public Producer(Random random, List<T> products) {
+    public Producer(Random random) {
         this.random = random;
+    }
+
+    public void setProducts(List<T> products) {
         this.products = products;
     }
 

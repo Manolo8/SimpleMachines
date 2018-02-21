@@ -234,9 +234,32 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
         if (full && current != null) checkDeposit();
         setWorking(checkStage());
     }
-    //=============ABSTRACT=============
-    public abstract void productMade(T product);
 
+    public void productMade(T product) {
+        Inventory inventory = getInventory(deposit);
+
+        if (inventory == null) return;
+
+        int overflow = InventoryUtils.giveItem(inventory, product.getMaterial(), product.getQuantity());
+
+        available -= product.getCost();
+
+        if (overflow != 0) {
+            setFull(true);
+            setWorking(false);
+            available += (overflow) * product.getPerQuantity();
+            return;
+        }
+
+        setFull(false);
+        searchNextProduct();
+    }
+
+    public boolean canProduce() {
+        return current != null && current.getCost() <= available;
+    }
+
+    //=============ABSTRACT=============
     public abstract void tick(long amount);
     //=============ABSTRACT=============
 

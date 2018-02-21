@@ -31,7 +31,7 @@ public class Content {
     }
 
     public Object getValue() {
-        if (value == null) return "''";
+        if (value == null || value == "") return 0;
         return value;
     }
 

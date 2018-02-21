@@ -8,12 +8,10 @@ import java.util.List;
 
 public class BluePrintService {
 
-    private BluePrintDao bluePrintDao;
     private List<BluePrint> bluePrints;
 
-    public BluePrintService(BluePrintDao bluePrintDao, BookFactory bookFactory) {
-        this.bluePrintDao = bluePrintDao;
-        this.bluePrints = bluePrintDao.loadAll();
+    public BluePrintService(List<BluePrint> bluePrints, BookFactory bookFactory) {
+        this.bluePrints = bluePrints;
 
         for (BluePrint bluePrint : bluePrints) {
             bluePrint.setBook(bookFactory.generateBook(bluePrint));

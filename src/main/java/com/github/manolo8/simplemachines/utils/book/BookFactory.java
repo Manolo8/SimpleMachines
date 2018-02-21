@@ -3,8 +3,10 @@ package com.github.manolo8.simplemachines.utils.book;
 import com.github.manolo8.simplemachines.domain.fuel.Fuel;
 import com.github.manolo8.simplemachines.domain.fuel.FuelBluePrint;
 import com.github.manolo8.simplemachines.domain.ingredient.IngredientProduct;
+import com.github.manolo8.simplemachines.domain.solar.SolarBluePrint;
+import com.github.manolo8.simplemachines.domain.solar.SolarFuel;
+import com.github.manolo8.simplemachines.domain.solar.TimeType;
 import com.github.manolo8.simplemachines.model.BluePrint;
-import com.github.manolo8.simplemachines.model.MachineType;
 import com.github.manolo8.simplemachines.model.Product;
 import com.github.manolo8.simplemachines.utils.replace.Replace;
 import org.bukkit.Material;
@@ -73,14 +75,15 @@ public class BookFactory {
         String cost = builder.toString();
         builder.setLength(0);
 
-        if (bluePrint.getType() == MachineType.FUEL) {
+        //Consertar isso depois... '-'
+        if (bluePrint.getSuper().equals("fuel")) {
             Replace productionFormatter = formatters.get("production_fuel");
             for (Product product : bluePrint.getProducer().getProducts()) {
                 builder.append(productionFormatter
                         .setValue("material", getName(product.getMaterial()))
                         .setValue("ticks", product.getCost()));
             }
-        } else if (bluePrint.getType() == MachineType.INGREDIENT) {
+        } else if (bluePrint.getSuper().equals("ingredient")) {
             Replace productionFormatter = formatters.get("production_ingredient");
             for (Product product : bluePrint.getProducer().getProducts()) {
                 builder.append(productionFormatter
@@ -101,6 +104,14 @@ public class BookFactory {
                         .setValue("material", getName(fuel.getMaterial()))
                         .setValue("speed", fuel.getSpeed())
                         .setValue("ticks", fuel.getBurnTime()));
+            }
+        }
+        if (bluePrint instanceof SolarBluePrint) {
+            Replace fuelReplace = formatters.get("solar_fuel");
+            for (SolarFuel fuel : ((SolarBluePrint) bluePrint).getFuelling().getFuels()) {
+                builder.append(fuelReplace
+                        .setValue("time", getName(fuel.getTimeType()))
+                        .setValue("tick", fuel.getQuantity()));
             }
         }
 
@@ -147,11 +158,19 @@ public class BookFactory {
     }
 
     private String getName(ItemStack itemStack) {
-        return getName(itemStack.getType());
+        return getName(itemStack.getType().name());
+    }
+
+    private String getName(TimeType timeType) {
+        return getName(timeType.name());
     }
 
     private String getName(Material material) {
-        String type = material.name().toLowerCase();
+        return getName(material.name());
+    }
+
+    private String getName(String name) {
+        String type = name.toLowerCase();
         return materials.getOrDefault(type, type);
     }
 }

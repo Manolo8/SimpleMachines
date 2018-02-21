@@ -1,16 +1,14 @@
 package com.github.manolo8.simplemachines.model;
 
-import com.github.manolo8.simplemachines.domain.fuel.Fuelling;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Random;
 
-public class BluePrint {
+public abstract class BluePrint {
 
     protected Random random;
     protected String name;
-    protected MachineType type;
     protected Design design;
     protected Producer<? extends Product> producer;
     protected List<ItemStack> buildCost;
@@ -31,14 +29,6 @@ public class BluePrint {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public MachineType getType() {
-        return type;
-    }
-
-    public void setType(MachineType type) {
-        this.type = type;
     }
 
     public Design getDesign() {
@@ -79,5 +69,11 @@ public class BluePrint {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public abstract Machine newInstance();
+
+    public String getSuper() {
+        return "default";
     }
 }

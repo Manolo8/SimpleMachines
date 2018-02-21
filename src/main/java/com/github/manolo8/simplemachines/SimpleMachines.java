@@ -10,8 +10,13 @@ import com.github.manolo8.simplemachines.database.dao.ChunkIDDao;
 import com.github.manolo8.simplemachines.database.dao.MachineDao;
 import com.github.manolo8.simplemachines.database.dao.impl.BluePrintDaoImpl;
 import com.github.manolo8.simplemachines.database.dao.impl.MachineDaoSQL;
+import com.github.manolo8.simplemachines.domain.fuel.FuelLoader;
+import com.github.manolo8.simplemachines.domain.ingredient.IngredientLoader;
+import com.github.manolo8.simplemachines.domain.solar.SolarLoader;
 import com.github.manolo8.simplemachines.exception.DataBaseException;
 import com.github.manolo8.simplemachines.listener.GlobalListener;
+import com.github.manolo8.simplemachines.model.BluePrint;
+import com.github.manolo8.simplemachines.model.BluePrintLoader;
 import com.github.manolo8.simplemachines.service.BluePrintService;
 import com.github.manolo8.simplemachines.service.ChunkIDService;
 import com.github.manolo8.simplemachines.service.MachineService;
@@ -24,6 +29,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -35,13 +42,14 @@ public class SimpleMachines extends JavaPlugin {
     private Economy economy;
     private BookFactory bookFactory;
     private MachineDao machineDao;
-    private BluePrintDao bluePrintDao;
     private ChunkIDService chunkIDService;
     private MachineService machineService;
     private BluePrintService bluePrintService;
     private MachineController machineController;
     private BluePrintController bluePrintController;
     private DataBaseBuild dataBaseBuild;
+
+    private List<BluePrint> bluePrints;
 
     @Override
     public void onEnable() {
@@ -52,7 +60,6 @@ public class SimpleMachines extends JavaPlugin {
         if (!startFactories()) return;
         if (!setupEconomy()) return;
         if (!startDatabase()) return;
-        startServices();
         startControllers();
         startDefaults();
         startCommandManager();
@@ -63,6 +70,14 @@ public class SimpleMachines extends JavaPlugin {
     public void onDisable() {
         if (machineService != null) machineService.saveAllMachines();
         if (dataBaseBuild != null) dataBaseBuild.close();
+    }
+
+    private List<BluePrintLoader> findLoaders() {
+        List<BluePrintLoader> bluePrintLoaders = new ArrayList<>();
+        bluePrintLoaders.add(new SolarLoader(random));
+        bluePrintLoaders.add(new IngredientLoader(random));
+        bluePrintLoaders.add(new FuelLoader(random));
+        return bluePrintLoaders;
     }
 
     public boolean startFactories() {
@@ -86,10 +101,15 @@ public class SimpleMachines extends JavaPlugin {
 
     private boolean startDatabase() {
         try {
+            BluePrintDao bluePrintDao = new BluePrintDaoImpl(getConfig(), random, findLoaders());
+            bluePrints = bluePrintDao.loadAll();
             dataBaseBuild = new DataBaseBuild();
             dataBaseBuild.buildByConfig(this, config);
-            machineDao = new MachineDaoSQL(dataBaseBuild);
-            bluePrintDao = new BluePrintDaoImpl(getConfig(), random);
+            bluePrintService = new BluePrintService(bluePrints, bookFactory);
+            machineDao = new MachineDaoSQL(dataBaseBuild, bluePrintService);
+            chunkIDService = new ChunkIDService((ChunkIDDao) machineDao);
+            machineService = new MachineService(machineDao, bluePrintService, chunkIDService, config);
+
         } catch (DataBaseException e) {
             ERROR("Could not load the database. Something is wrong! The plugin will be disabled", e.getStackTrace());
             Bukkit.getPluginManager().disablePlugin(this);
@@ -114,12 +134,6 @@ public class SimpleMachines extends JavaPlugin {
         }
         economy = rsp.getProvider();
         return true;
-    }
-
-    private void startServices() {
-        chunkIDService = new ChunkIDService((ChunkIDDao) machineDao);
-        bluePrintService = new BluePrintService(bluePrintDao, bookFactory);
-        machineService = new MachineService(machineDao, bluePrintService, chunkIDService, config);
     }
 
     private void startControllers() {

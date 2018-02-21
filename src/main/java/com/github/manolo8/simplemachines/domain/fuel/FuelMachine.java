@@ -85,10 +85,6 @@ public class FuelMachine<F extends Product, T extends Producer<F>> extends Machi
         available += quantity;
     }
 
-    public boolean canProduce() {
-        return current != null && current.getCost() <= available;
-    }
-
     //=============OVERRIDE=============
     @Override
     public boolean checkStage() {
@@ -108,26 +104,6 @@ public class FuelMachine<F extends Product, T extends Producer<F>> extends Machi
     public void canWork() {
         if (noFuel) burnFuel();
         super.canWork();
-    }
-
-    @Override
-    public void productMade(F product) {
-        Inventory inventory = getInventory(deposit);
-
-        if (inventory == null) return;
-
-        int overflow = InventoryUtils.giveItem(inventory, product.getMaterial(), product.getQuantity());
-
-        available -= product.getCost();
-
-        if (overflow != 0) {
-            setFull(true);
-            setWorking(false);
-            available += (overflow) * product.getPerQuantity();
-            return;
-        }
-        setFull(false);
-        searchNextProduct();
     }
 
     @Override

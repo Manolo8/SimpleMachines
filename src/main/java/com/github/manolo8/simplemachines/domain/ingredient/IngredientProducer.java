@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class IngredientProducer extends com.github.manolo8.simplemachines.model.Producer<IngredientProduct> {
 
-    public IngredientProducer(Random random, List<IngredientProduct> products) {
-        super(random, products);
+    public IngredientProducer(Random random) {
+        super(random);
     }
 
     public IngredientProduct isIngredient(Material material) {

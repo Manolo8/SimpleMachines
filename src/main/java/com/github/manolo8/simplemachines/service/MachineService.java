@@ -3,11 +3,7 @@ package com.github.manolo8.simplemachines.service;
 import com.github.manolo8.simplemachines.Config;
 import com.github.manolo8.simplemachines.SimpleMachines;
 import com.github.manolo8.simplemachines.database.dao.MachineDao;
-import com.github.manolo8.simplemachines.domain.fuel.FuelMachine;
-import com.github.manolo8.simplemachines.exception.MachineInvalidException;
-import com.github.manolo8.simplemachines.model.BluePrint;
 import com.github.manolo8.simplemachines.model.Machine;
-import com.github.manolo8.simplemachines.utils.MachineData;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -61,8 +57,8 @@ public class MachineService {
         return null;
     }
 
-    public void createNewMachine(Machine machine) throws MachineInvalidException {
-        if (!machine.isValid()) throw new MachineInvalidException("machine.invalid");
+    public void createNewMachine(Machine machine) {
+        if (!machine.isValid()) return;
         machineDao.saveNewMachine(machine);
         machines.add(machine);
         machine.setChanged(true);
@@ -80,38 +76,9 @@ public class MachineService {
 
     public void loadMachines(Chunk chunk) {
         if (!chunkIDService.hasMachineOnChunk(chunk)) return;
-        List<MachineData> toLoad = machineDao.loadFromChunk(chunk.getX(), chunk.getZ(), chunk.getWorld().getUID());
+        List<Machine> toLoad = machineDao.loadFromChunk(chunk.getX(), chunk.getZ(), chunk.getWorld().getUID());
 
-        for (MachineData data : toLoad) {
-            BluePrint bluePrint = bluePrintService.getBluePrint(data.getBluePrintName());
-
-            Machine machine;
-
-            try {
-                machine = bluePrint.getType().getMachine();
-            } catch (Exception e) {
-                if (config.REMOVE_MACHINE_WRONG)
-                    machineDao.deleteMachine(data.getUuid());
-                else
-                    SimpleMachines.ERROR("Nao foi possivel carregar o blueprint " + data.getBluePrintName() + ". \n" +
-                            "Ele nao existe mais? Caso queira remover as\nmaquinas com esse blueprint va na config" +
-                            " e\nhabilite removeMachineWrong para true");
-                continue;
-            }
-
-            machine.setBluePrint(bluePrint);
-            machine.setBase(data.getBase());
-            machine.setFace(data.getFace());
-            machine.setChunkX(data.getChunkX());
-            machine.setChunkZ(data.getChunkZ());
-            machine.setOwner(data.getOwner());
-            machine.setUuid(data.getUuid());
-            machine.setWorld(chunk.getWorld());
-            machine.setAvailable(data.getAvailable());
-            if (machine instanceof FuelMachine) {
-                ((FuelMachine) machine).setBurningTime(data.getBurningTime());
-                ((FuelMachine) machine).setSpeed(data.getSpeed());
-            }
+        for (Machine machine : toLoad) {
 
             if (machine.isValid()) {
                 machines.add(machine);

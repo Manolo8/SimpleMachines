@@ -1,9 +1,7 @@
 package com.github.manolo8.simplemachines.database.dao;
 
-import com.github.manolo8.simplemachines.exception.DataBaseException;
 import com.github.manolo8.simplemachines.model.BluePrint;
 import com.github.manolo8.simplemachines.model.Machine;
-import com.github.manolo8.simplemachines.utils.MachineData;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +20,7 @@ public interface MachineDao {
      * @param z coordenadas da chunk
      * @return uma lista com todas as máquinas nessa chunk
      */
-    List<MachineData> loadFromChunk(int x, int z, UUID world);
+    List<Machine> loadFromChunk(int x, int z, UUID world);
 
 
     /**

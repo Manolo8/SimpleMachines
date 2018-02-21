@@ -1,7 +1,5 @@
 package com.github.manolo8.simplemachines.controller;
 
-import com.github.manolo8.simplemachines.SimpleMachines;
-import com.github.manolo8.simplemachines.exception.DataBaseException;
 import com.github.manolo8.simplemachines.model.BluePrint;
 import com.github.manolo8.simplemachines.model.Machine;
 import com.github.manolo8.simplemachines.service.BluePrintService;
@@ -71,11 +69,10 @@ public class BluePrintController implements Runnable {
 
         for (int x = 0; x < 3; x++)
             for (int y = 0; y < 3; y++)
-                for (int z = 0; z < 3; z++)
-                    if (building.clone().add(x, -y, z).getBlock().getType() != Material.AIR) return false;
-//                    Material material = building.clone().add(x, -y, z).getBlock().getType();
-//                    if (!(material == Material.IRON_BLOCK || material == Material.AIR)) return false;
-
+                for (int z = 0; z < 3; z++) {
+                    Material material = building.clone().add(x, -y, z).getBlock().getType();
+                    if (!(material == Material.IRON_BLOCK || material == Material.AIR)) return false;
+                }
 
         return true;
     }
@@ -94,13 +91,7 @@ public class BluePrintController implements Runnable {
 //    }
 
     private Machine fromMachineBuilder(MachineBuilder builder) {
-        Machine machine;
-        try {
-            machine = builder.getBluePrint().getType().getMachine();
-        } catch (DataBaseException e) {
-            SimpleMachines.ERROR("Machine " + builder.getBluePrint().getName() + " not found.");
-            return null;
-        }
+        Machine machine = builder.getBluePrint().newInstance();
 
         machine.setFace(builder.getBlockFace());
         machine.setBase(builder.getBase());

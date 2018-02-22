@@ -1,5 +1,6 @@
 package com.github.manolo8.simplemachines.commands;
 
+import com.github.manolo8.simplemachines.Language;
 import com.github.manolo8.simplemachines.commands.annotation.CommandMapping;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.command.Command;
@@ -18,9 +19,11 @@ public class CommandController implements CommandExecutor {
 
     private final Object commands;
     private final List<Method> methods;
+    private final Language language;
 
-    public CommandController(Object object) {
+    public CommandController(Object object, Language language) {
         this.methods = new ArrayList<>();
+        this.language = language;
         this.commands = object;
 
         for (Method method : object.getClass().getDeclaredMethods()) {
@@ -33,7 +36,7 @@ public class CommandController implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] args) {
         if (!(cs instanceof Player)) {
-            cs.sendMessage("§cOnly players can use this command");
+            cs.sendMessage(language.getString("command.only.players"));
             return true;
         }
 
@@ -42,25 +45,29 @@ public class CommandController implements CommandExecutor {
         String command = cmnd.getName().toLowerCase();
 
         if (args.length == 0) {
-            return false;
+            sendHelp(player);
         }
 
         for (Method method : methods) {
             CommandMapping annotation = method.getAnnotation(CommandMapping.class);
 
-            if (!annotation.superCommand().equals(command)) {
+            if (!annotation.command().equals(command)) {
                 continue;
             }
 
-            if (!annotation.command().equals(args[0].toLowerCase())) continue;
+            String subCommandLang = language.getString(annotation.subCommand());
+
+            if (!subCommandLang.equals(args[0].toLowerCase())) {
+                continue;
+            }
 
             if (!player.hasPermission(annotation.permission())) {
-                player.sendMessage(annotation.permissionMessage());
+                player.sendMessage(language.getString("command.no.permission"));
                 return true;
             }
 
             if (!ArrayUtils.contains(annotation.args(), args.length)) {
-                player.sendMessage(annotation.usage());
+                player.sendMessage(language.getString(annotation.usage()));
                 return true;
             }
 
@@ -72,8 +79,18 @@ public class CommandController implements CommandExecutor {
                 player.sendMessage("§cAn internal error occurred");
                 e.printStackTrace();
             }
-            return true;
         }
+        sendHelp(player);
         return true;
+    }
+
+    public void sendHelp(Player player) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Method method : methods) {
+            builder.append(language.getString(method.getAnnotation(CommandMapping.class).usage())).append("\n");
+        }
+
+        player.sendMessage(builder.toString());
     }
 }

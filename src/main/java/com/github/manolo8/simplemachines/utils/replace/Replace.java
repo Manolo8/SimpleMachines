@@ -13,14 +13,8 @@ public class Replace {
         this.contents = new ArrayList<>();
     }
 
-    public boolean hasKey(String key) {
-        for (Content content : contents) if (content.getKey().equals(key)) return true;
-        return false;
-    }
-
-    public Replace setTemplate(String template) {
-        this.template = template;
-        compile();
+    public Replace setValues(Object object) {
+        for (Content content : contents) if (!content.getKey().equals("end")) content.setValue(object);
         return this;
     }
 
@@ -53,7 +47,7 @@ public class Replace {
             }
             mainBuilder.append(c);
         }
-        contents.add(new Content("end", mainBuilder.toString(), ";"));
+        contents.add(new Content("end", mainBuilder.toString(), ""));
         //Libera a memória
         template = null;
         return this;
@@ -65,6 +59,11 @@ public class Replace {
         for (Content content : contents) builder.append(content.getDef()).append(content.getValue());
 
         return builder.toString();
+    }
+
+    public StringBuilder build(StringBuilder builder) {
+        for (Content content : contents) builder.append(content.getDef()).append(content.getValue());
+        return builder;
     }
 
     @Override

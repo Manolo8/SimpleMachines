@@ -24,7 +24,7 @@ public @interface CommandMapping
 
     public String command() default "default";
     
-    public String superCommand() default "x1";
+    public String subCommand() default "x1";
     
     public String usage() default "";
 

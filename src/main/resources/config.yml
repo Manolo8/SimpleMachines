@@ -1,5 +1,10 @@
-VERSION: 1.1
+VERSION: 1.2
+LANGUAGE: EN-US
 #Remove all wrong machine from the database (when loaded first)
+#This wrong means you config change (name of the blueprint or the type
+#of the machine!
+#You can change everything from an machine which is already in use, but
+#don't change the name and the type!
 REMOVE_MACHINE_WRONG: false
 Database:
   #types: [SQLITE],[MYSQL]
@@ -85,7 +90,7 @@ machines:
       wood:
         burn: 150
         speed: 0.8
-  "macerador":
+  "macerator":
     type: ingredient
     price: 6000
     design:

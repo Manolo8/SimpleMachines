@@ -38,6 +38,7 @@ public class SimpleMachines extends JavaPlugin {
 
     private static Logger logger;
     private Config config;
+    private Language language;
     private Random random;
     private Economy economy;
     private BookFactory bookFactory;
@@ -54,6 +55,7 @@ public class SimpleMachines extends JavaPlugin {
     @Override
     public void onEnable() {
         this.config = new Config(this);
+        this.language = new Language(this, config);
         this.random = new Random();
         logger = getLogger();
 
@@ -148,8 +150,8 @@ public class SimpleMachines extends JavaPlugin {
     }
 
     private void startCommandManager() {
-        Commands commands = new Commands(bluePrintService, economy);
-        CommandController commandController = new CommandController(commands);
+        Commands commands = new Commands(bluePrintService, economy, language);
+        CommandController commandController = new CommandController(commands, language);
         getCommand("machines").setExecutor(commandController);
     }
 

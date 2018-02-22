@@ -88,7 +88,7 @@ public class MachineService {
             //Se não for carregada apenas removemos do banco de dados
             //E avisamos no console.
             deleteMachine(machine);
-            SimpleMachines.ERROR("Não foi possível carregar a máquina " + machine.getUuid());
+            SimpleMachines.ERROR("Can't load machine with UUID " + machine.getUuid());
         }
     }
 

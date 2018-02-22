@@ -25,8 +25,8 @@ import java.util.UUID;
 
 public class MachineDaoSQL implements MachineDao, ChunkIDDao {
 
-    private final Replace insertQuery = new Replace("INSERT INTO machines (uuid,owner,world,facing,chunkX,chunkZ,speed,burningTime,available,base,bluePrintName) VALUES ('{uuid}','{owner}','{world}','{facing}',{chunkX},{chunkZ},{speed},{burningTime},{available},'{base}','{bluePrintName}')").compile();
-    private final Replace updateQuery = new Replace("UPDATE machines SET speed={speed},burningTime={burningTime},available={available} WHERE uuid='{uuid}'").compile();
+    private final Replace insertQuery = new Replace("INSERT INTO machines (uuid,owner,world,facing,chunkX,chunkZ,speed,burningTime,available,base,bluePrintName) VALUES ('{uuid}','{owner}','{world}','{facing}',{chunkX},{chunkZ},{speed},{burningTime},{available},'{base}','{bluePrintName}')").compile().setValues(0);
+    private final Replace updateQuery = new Replace("UPDATE machines SET speed={speed},burningTime={burningTime},available={available} WHERE uuid='{uuid}'").compile().setValues(0);
     private final Replace deleteQuery = new Replace("DELETE FROM machines WHERE uuid='{uuid}'").compile();
     private final Replace selectQuery = new Replace("SELECT * FROM machines WHERE chunkX={x} AND chunkZ={z} AND world='{world}'").compile();
     private final String selectChunkId = "SELECT chunkX,chunkZ,world,COUNT(uuid) as quantity FROM machines GROUP BY chunkX,chunkZ";

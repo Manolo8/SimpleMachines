@@ -12,7 +12,7 @@ public final class Config {
 
     public boolean REMOVE_MACHINE_WRONG;
     private final FileConfiguration config;
-    private final double _VERSION = 1.1;
+    private final double _VERSION = 1.2;
 
     public Config(SimpleMachines plugin) {
         plugin.saveDefaultConfig();

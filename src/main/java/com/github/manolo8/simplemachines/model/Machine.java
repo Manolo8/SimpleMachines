@@ -222,7 +222,7 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
 
         if (inventory == null) return;
 
-        setFull(InventoryUtils.isFull(inventory, current.material));
+        setFull(InventoryUtils.isFull(inventory, current.getItemStack()));
     }
 
     protected boolean checkStage() {
@@ -240,7 +240,7 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
 
         if (inventory == null) return;
 
-        int overflow = InventoryUtils.giveItem(inventory, product.getMaterial(), product.getQuantity());
+        int overflow = InventoryUtils.giveItem(inventory, product.getItemStack(), product.getQuantity());
 
         available -= product.getCost();
 

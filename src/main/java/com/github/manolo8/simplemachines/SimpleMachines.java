@@ -191,7 +191,6 @@ public class SimpleMachines extends JavaPlugin {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             getLogger().info("Can't check for updates...");
         }
     }
@@ -217,7 +216,6 @@ public class SimpleMachines extends JavaPlugin {
         logger.warning("====================================================");
     }
 
-    //https://bukkit.org/threads/bukkits-yaml-configuration-tutorial.42770/
     private void copy(InputStream in, File file) {
         try {
             OutputStream out = new FileOutputStream(file);

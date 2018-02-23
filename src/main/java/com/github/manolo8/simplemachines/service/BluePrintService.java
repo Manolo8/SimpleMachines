@@ -1,6 +1,5 @@
 package com.github.manolo8.simplemachines.service;
 
-import com.github.manolo8.simplemachines.database.dao.BluePrintDao;
 import com.github.manolo8.simplemachines.model.BluePrint;
 import com.github.manolo8.simplemachines.utils.book.BookFactory;
 

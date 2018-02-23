@@ -67,10 +67,10 @@ public class IngredientLoader extends BluePrintLoader<FuelBluePrint, IngredientD
         List<IngredientProduct> products = new ArrayList<>();
         for (String material : section.getKeys(false)) {
             IngredientProduct ingredientProduct = new IngredientProduct();
-            ingredientProduct.setMaterial(getMaterial(material, Material.STONE));
+            ingredientProduct.setItemStack(getItemStack(material, Material.STONE));
             ingredientProduct.setCost(section.getInt(material + ".fuel", 50));
             ingredientProduct.setQuantity(section.getInt(material + ".quantity", 1));
-            ingredientProduct.setIngredient(getMaterial(section.getString(material + ".with"), Material.BEDROCK));
+            ingredientProduct.setIngredient(getItemStack(section.getString(material + ".with"), Material.BEDROCK));
             products.add(ingredientProduct);
         }
         ingredientProducer.setProducts(products);
@@ -79,7 +79,7 @@ public class IngredientLoader extends BluePrintLoader<FuelBluePrint, IngredientD
     private void getFuelling(ConfigurationSection section, Fuelling fuelling) {
         List<Fuel> fuels = new ArrayList<>();
         for (String material : section.getKeys(false)) {
-            fuels.add(new Fuel(getMaterial(material, Material.COAL),
+            fuels.add(new Fuel(getItemStack(material, Material.COAL),
                     section.getInt(material + ".burn", 50),
                     section.getDouble(material + ".speed", 1)));
         }

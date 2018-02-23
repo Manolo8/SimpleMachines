@@ -8,13 +8,6 @@ public class SolarMachine<F extends Product, T extends Producer<F>> extends Mach
 
     private SolarFuel currentFuel;
 
-
-    //============ENCAPSULATION============
-    public void setCurrentFuel(SolarFuel currentFuel) {
-        this.currentFuel = currentFuel;
-    }
-    //============ENCAPSULATION============
-
     //===============METHODS===============
 
     public void findFuel() {

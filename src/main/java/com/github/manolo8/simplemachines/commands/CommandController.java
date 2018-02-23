@@ -46,6 +46,7 @@ public class CommandController implements CommandExecutor {
 
         if (args.length == 0) {
             sendHelp(player);
+            return true;
         }
 
         for (Method method : methods) {

@@ -31,7 +31,7 @@ public abstract class BluePrintLoader<T extends BluePrint, D extends Design, P e
         List<Product> products = new ArrayList<>();
         for (String material : section.getKeys(false)) {
             Product product = new Product();
-            product.setMaterial(getMaterial(material, Material.STONE));
+            product.setItemStack(getItemStack(material, Material.STONE));
             product.setCost(section.getInt(material, 50));
             product.setQuantity(1);
             products.add(product);
@@ -40,21 +40,35 @@ public abstract class BluePrintLoader<T extends BluePrint, D extends Design, P e
     }
 
     protected void getBuildCost(ConfigurationSection section, List<ItemStack> list) {
-        for (String material : section.getKeys(false))
-            list.add(new ItemStack(getMaterial(material, Material.DIAMOND), section.getInt(material, 50)));
-    }
-
-    protected Material getMaterial(String name, Material def) {
-        return getMaterial(name, def, false);
+        for (String material : section.getKeys(false)) {
+            ItemStack stack = getItemStack(material, Material.DIAMOND);
+            stack.setAmount(section.getInt(material, 50));
+            list.add(stack);
+        }
     }
 
     /**
      * @param name  Nome do material
      * @param def   material caso o que seja encontrado seja inválido
-     * @param solid forçar ser sólido
      * @return o material, caso tudo esteja corredo ou o def caso algo esteja
      * incorreto
      */
+    protected ItemStack getItemStack(String name, Material def) {
+        try {
+            Material material = Material.getMaterial(name.toUpperCase());
+
+            if (material == null) {
+                SimpleMachines.ERROR("Material '" + name + "' is not valid");
+                return new ItemStack(def);
+            }
+            return new ItemStack(material);
+        } catch (Exception e) {
+            e.printStackTrace();
+            SimpleMachines.ERROR("Material '" + name + "' is not valid");
+            return new ItemStack(def);
+        }
+    }
+
     protected Material getMaterial(String name, Material def, boolean solid) {
         try {
             Material material = Material.getMaterial(name.toUpperCase());

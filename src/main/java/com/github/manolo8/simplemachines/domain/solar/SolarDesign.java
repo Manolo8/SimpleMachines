@@ -6,10 +6,6 @@ import org.bukkit.block.BlockFace;
 
 public class SolarDesign extends Design {
 
-    public SimpleLocation getIngredientDepositLoc(BlockFace face, SimpleLocation base) {
-        return blocks[5].clone().rotate(face).add(base);
-    }
-
     @Override
     protected void buildDefaults() {
         blocks[6].setMaterial(divisor);

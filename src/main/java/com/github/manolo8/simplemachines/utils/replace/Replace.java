@@ -30,25 +30,25 @@ public class Replace {
         contents.clear();
 
         StringBuilder mainBuilder = new StringBuilder();
+        StringBuilder keyBuilder = new StringBuilder();
 
         for (int i = 0; i < template.length(); i++) {
             char c = template.charAt(i);
             if (c == '{') {
-                StringBuilder builder = new StringBuilder();
                 while (i < template.length()) {
                     i++;
                     c = template.charAt(i);
                     if (c == '}') break;
-                    builder.append(c);
+                    keyBuilder.append(c);
                 }
-                contents.add(new Content(builder.toString(), mainBuilder.toString(), ""));
-                mainBuilder = new StringBuilder();
+                contents.add(new Content(keyBuilder.toString(), mainBuilder.toString(), ""));
+                mainBuilder.setLength(0);
+                keyBuilder.setLength(0);
                 continue;
             }
             mainBuilder.append(c);
         }
         contents.add(new Content("end", mainBuilder.toString(), ""));
-        //Libera a memória
         template = null;
         return this;
     }

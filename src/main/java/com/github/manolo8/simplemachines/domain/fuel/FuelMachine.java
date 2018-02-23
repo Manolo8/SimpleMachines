@@ -16,14 +16,6 @@ public class FuelMachine<F extends Product, T extends Producer<F>> extends Machi
     protected double speed;
 
     //============ENCAPSULATION============
-    public SimpleLocation getFuelDeposit() {
-        return fuelDeposit;
-    }
-
-    public void setFuelDeposit(SimpleLocation fuelDeposit) {
-        this.fuelDeposit = fuelDeposit;
-    }
-
     public double getBurningTime() {
         return burningTime;
     }
@@ -38,10 +30,6 @@ public class FuelMachine<F extends Product, T extends Producer<F>> extends Machi
 
     public void setSpeed(double speed) {
         this.speed = speed;
-    }
-
-    public boolean isNoFuel() {
-        return noFuel;
     }
 
     public void setNoFuel(boolean noFuel) {

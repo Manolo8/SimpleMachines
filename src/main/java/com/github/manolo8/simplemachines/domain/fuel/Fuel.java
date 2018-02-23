@@ -1,21 +1,21 @@
 package com.github.manolo8.simplemachines.domain.fuel;
 
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class Fuel {
 
-    private Material material;
+    private ItemStack itemStack;
     private double burnTime;
     private double speed;
 
-    public Fuel(Material material, double burnTime, double speed) {
-        this.material = material;
+    public Fuel(ItemStack itemStack, double burnTime, double speed) {
+        this.itemStack = itemStack;
         this.burnTime = burnTime;
         this.speed = speed;
     }
 
-    public Material getMaterial() {
-        return material;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
     public double getBurnTime() {

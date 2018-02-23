@@ -50,7 +50,7 @@ public class FuelLoader extends BluePrintLoader<FuelBluePrint, FuelDesign, Produ
     private void getFuelling(ConfigurationSection section, Fuelling fuelling) {
         List<Fuel> fuels = new ArrayList<>();
         for (String material : section.getKeys(false)) {
-            fuels.add(new Fuel(getMaterial(material, Material.COAL),
+            fuels.add(new Fuel(getItemStack(material, Material.COAL),
                     section.getInt(material + ".burn", 50),
                     section.getDouble(material + ".speed", 1)));
         }

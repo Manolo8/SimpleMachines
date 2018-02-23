@@ -9,6 +9,7 @@ import com.github.manolo8.simplemachines.utils.replace.Replace;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Willian
@@ -45,7 +46,7 @@ public class Commands {
             return;
         }
 
-        if (InventoryUtils.isFull(author.getInventory(), Material.WRITTEN_BOOK)) {
+        if (InventoryUtils.isFull(author.getInventory(), new ItemStack(Material.WRITTEN_BOOK))) {
             author.sendMessage(language.getString("command.inventory.full"));
             return;
         }

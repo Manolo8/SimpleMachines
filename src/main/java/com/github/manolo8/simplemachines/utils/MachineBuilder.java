@@ -52,7 +52,7 @@ public class MachineBuilder {
     }
 
     public void prepare() {
-        //Retorna um blone por conta de haver outras máquinas com outras
+        //Retorna um clone por conta de haver outras máquinas com outras
         //Posições sendo criadas ao mesmo tempo
         this.blocks = bluePrint.getDesign().getBlocks(getBlockFace());
     }
@@ -85,13 +85,10 @@ public class MachineBuilder {
         switch (face) {
             case NORTH:
                 return 0x2;
-
             case SOUTH:
                 return 0x3;
-
             case WEST:
                 return 0x4;
-
             case EAST:
             default:
                 return 0x5;

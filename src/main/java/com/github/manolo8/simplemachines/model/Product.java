@@ -1,19 +1,19 @@
 package com.github.manolo8.simplemachines.model;
 
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class Product {
 
-    protected Material material;
+    protected ItemStack itemStack;
     protected int quantity;
     protected double cost;
 
-    public Material getMaterial() {
-        return material;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
-    public void setMaterial(Material material) {
-        this.material = material;
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
     }
 
     public int getQuantity() {

@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="SimpleMachines:jar">
+    <output-path>$USER_HOME$/Desktop/server/plugins</output-path>
+    <root id="root">
+      <element id="archive" name="SimpleMachines.jar">
+        <element id="module-output" name="SimpleMachines" />
+      </element>
+    </root>
+  </artifact>
+</component>

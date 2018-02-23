@@ -76,19 +76,20 @@ public class BookFactory {
         builder.setLength(0);
 
         //Consertar isso depois... '-'
-        if (bluePrint.getSuper().equals("fuel")) {
-            Replace productionFormatter = formatters.get("production_fuel");
-            for (Product product : bluePrint.getProducer().getProducts()) {
-                builder.append(productionFormatter
-                        .setValue("material", getName(product.getMaterial()))
-                        .setValue("ticks", product.getCost()));
-            }
-        } else if (bluePrint.getSuper().equals("ingredient")) {
+
+        if (bluePrint.getSuper().equals("ingredient")) {
             Replace productionFormatter = formatters.get("production_ingredient");
             for (Product product : bluePrint.getProducer().getProducts()) {
                 builder.append(productionFormatter
-                        .setValue("material", getName(product.getMaterial()))
+                        .setValue("material", getName(product.getItemStack()))
                         .setValue("with", getName(((IngredientProduct) product).getIngredient()))
+                        .setValue("ticks", product.getCost()));
+            }
+        } else {
+            Replace productionFormatter = formatters.get("production_fuel");
+            for (Product product : bluePrint.getProducer().getProducts()) {
+                builder.append(productionFormatter
+                        .setValue("material", getName(product.getItemStack()))
                         .setValue("ticks", product.getCost()));
             }
         }
@@ -101,7 +102,7 @@ public class BookFactory {
             Replace fuelReplace = formatters.get("fuel");
             for (Fuel fuel : ((FuelBluePrint) bluePrint).getFuelling().getFuels()) {
                 builder.append(fuelReplace
-                        .setValue("material", getName(fuel.getMaterial()))
+                        .setValue("material", getName(fuel.getItemStack().getType()))
                         .setValue("speed", fuel.getSpeed())
                         .setValue("ticks", fuel.getBurnTime()));
             }
@@ -110,8 +111,9 @@ public class BookFactory {
             Replace fuelReplace = formatters.get("solar_fuel");
             for (SolarFuel fuel : ((SolarBluePrint) bluePrint).getFuelling().getFuels()) {
                 builder.append(fuelReplace
+                        .setValue("speed", fuel.getQuantity())
                         .setValue("time", getName(fuel.getTimeType()))
-                        .setValue("tick", fuel.getQuantity()));
+                        .setValue("ticks", fuel.getQuantity()));
             }
         }
 
@@ -143,9 +145,7 @@ public class BookFactory {
                 }
 
                 builder2.append(c);
-                if (c == '\n') {
-                    lines++;
-                }
+                if (c == '\n') lines++;
             }
             if (builder2.length() != 0) pgs.add(builder2.toString());
         }

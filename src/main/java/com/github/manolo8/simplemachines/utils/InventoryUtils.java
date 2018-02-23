@@ -18,8 +18,7 @@ public class InventoryUtils {
         for (int i = 0; i < contents.length; i++) {
             ItemStack stack = contents[i];
             if (stack == null) continue;
-            Material material = stack.getType();
-            Fuel fuel = deposit.getIfFuel(material);
+            Fuel fuel = deposit.getIfFuel(stack);
 
             if (fuel != null) {
                 if (stack.getAmount() == 1) {
@@ -34,10 +33,9 @@ public class InventoryUtils {
         return null;
     }
 
-    public static boolean isFull(Inventory inventory, Material material) {
-        if (inventory == null) return false;
+    public static boolean isFull(Inventory inventory, ItemStack is) {
+        if (is == null) return false;
 
-        ItemStack is = new ItemStack(material);
         int stackSize = is.getMaxStackSize();
 
         ItemStack[] contents = inventory.getContents();
@@ -49,8 +47,7 @@ public class InventoryUtils {
         return true;
     }
 
-    public static int giveItem(Inventory inventory, Material material, int amount) {
-        ItemStack is = new ItemStack(material);
+    public static int giveItem(Inventory inventory, ItemStack is, int amount) {
         int stackSize = is.getMaxStackSize();
 
         ItemStack[] contents = inventory.getContents();
@@ -59,11 +56,15 @@ public class InventoryUtils {
 
             if (stack == null) {
                 if (amount > stackSize) {
-                    inventory.setItem(i, new ItemStack(material, stackSize));
+                    ItemStack temp = is.clone();
+                    temp.setAmount(stackSize);
+                    inventory.setItem(i, temp);
                     amount -= stackSize;
                     continue;
                 }
-                inventory.setItem(i, new ItemStack(material, amount));
+                ItemStack temp = is.clone();
+                temp.setAmount(amount);
+                inventory.setItem(i, temp);
                 return 0;
             }
 
@@ -150,22 +151,21 @@ public class InventoryUtils {
         ItemStack[] contents = inventory.getContents();
         for (ItemStack stack : contents) {
             if (stack == null) continue;
-            IngredientProduct product = producer.isIngredient(stack.getType());
+            IngredientProduct product = producer.isIngredient(stack);
             if (product != null) return product;
         }
 
         return null;
     }
 
-    public static boolean removeItem(Inventory inventory, Material ingredient) {
+    public static boolean removeItem(Inventory inventory, ItemStack itemStack) {
         ItemStack[] contents = inventory.getContents();
-        ItemStack material = new ItemStack(ingredient);
 
         for (int a = 0; a < contents.length; a++) {
             ItemStack stack = contents[a];
             if (stack == null) continue;
 
-            if (!stack.isSimilar(material)) continue;
+            if (!stack.isSimilar(itemStack)) continue;
 
             if (stack.getAmount() > 1) stack.setAmount(stack.getAmount() - 1);
             else inventory.clear(a);

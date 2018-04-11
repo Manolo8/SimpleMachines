@@ -1,52 +1,58 @@
-#To change material name use
-#[material-NAME_OF_MATERIAL]
-#new name
+
+#Renomeie esse arquivo para book.txt para torna-lo padrão!
+#Para adicionar a tradução de minérios:
+#[material-NOME]
+#Nome customizável
 #[end]
 
 [material-gold_ore]
-Gold Ore
+Minério de ouro
 [end]
 
 [material-diamond]
-Diamond
+Diamante
 [end]
 
 [material-arrow]
-Arrow
+Flexa
 [end]
 
 [material-bone]
-Bone
+Osso
 [end]
 
 [material-coal]
-Coal
+Carvão
 [end]
 
 [material-diamond_ore]
-Diamond Ore
+Minério de diamante
 [end]
 
-#Only change the ones below (dont remove)
+#Tudo que está abaixo não pode ser removido, só alterado
 [formatter-cost]
 &c-> {material} {quantity}
 [end]
 
+[formatter-collect]
+&a-> {item}
+[end]
+
 [formatter-production_fuel]
 &c->{material}
-&cEach {ticks} ticks
+&cA cada {ticks} ticks
 [end]
 
 [formatter-production_ingredient]
 &c->{material}
-&cWith: {with}
-&cUse {ticks} fuel
+&cCom: {with}
+&cA cada {ticks} ticks
 &a-------------------
 [end]
 
 [formatter-fuel]
 &c-> {material} {speed}x
-&bBurn for {ticks}
+&bQueima por {ticks}
 &a-------------------
 [end]
 
@@ -63,25 +69,25 @@ Diamond Ore
 
 [page-0]
 &d&l--{name}--
-&aBook cost:
+&aCusto do livro:
 {cost}
-&aClick on an iron
-block to start
-building the machine
+&aClique em um bloco de
+ferro para iniciar a
+construção da máquina!
 [end]
 
 [page-1]
-&a&l----Production:----
-{production}&aGo to the next
-page to see the
-fuels!
+&a&l----Produção:----
+{production}&aVá para a próxima
+página para ver os
+combustíveis!
 [end]
 
 [page-2]
-&a&l--Fuels---
+&a&l--Combustíveis---
 {fuel}
 [end]
 
 [page-3]
-&c&lEnd
+FIM
 [end]

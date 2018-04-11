@@ -10,6 +10,7 @@ import com.github.manolo8.simplemachines.database.dao.ChunkIDDao;
 import com.github.manolo8.simplemachines.database.dao.MachineDao;
 import com.github.manolo8.simplemachines.database.dao.impl.BluePrintDaoImpl;
 import com.github.manolo8.simplemachines.database.dao.impl.MachineDaoSQL;
+import com.github.manolo8.simplemachines.domain.collector.CollectorLoader;
 import com.github.manolo8.simplemachines.domain.fuel.FuelLoader;
 import com.github.manolo8.simplemachines.domain.ingredient.IngredientLoader;
 import com.github.manolo8.simplemachines.domain.solar.SolarLoader;
@@ -21,8 +22,10 @@ import com.github.manolo8.simplemachines.service.BluePrintService;
 import com.github.manolo8.simplemachines.service.ChunkIDService;
 import com.github.manolo8.simplemachines.service.MachineService;
 import com.github.manolo8.simplemachines.utils.book.BookFactory;
+import com.github.manolo8.simplemachines.utils.item.ItemFactory;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -42,6 +46,7 @@ public class SimpleMachines extends JavaPlugin {
     private Random random;
     private Economy economy;
     private BookFactory bookFactory;
+    private ItemFactory itemFactory;
     private MachineDao machineDao;
     private ChunkIDService chunkIDService;
     private MachineService machineService;
@@ -49,8 +54,29 @@ public class SimpleMachines extends JavaPlugin {
     private MachineController machineController;
     private BluePrintController bluePrintController;
     private DataBaseBuild dataBaseBuild;
-
     private List<BluePrint> bluePrints;
+    private Map<String, ItemStack> customItems;
+
+    public static void ERROR(String message) {
+        ERROR(message, null);
+    }
+
+    public static void ERROR(String message, StackTraceElement[] stackTraceElements) {
+        logger.warning("");
+        logger.warning("");
+        logger.warning("====================================================");
+        logger.warning("===          ERROR REPORT SIMPLEMACHINES:        ===");
+        logger.warning("====================================================");
+        logger.warning("= MESSAGE => ");
+        for (String string : message.split("\n")) logger.warning(string);
+        if (stackTraceElements != null) {
+            logger.warning("StackTrace: ");
+            for (StackTraceElement element : stackTraceElements) logger.warning(element.toString());
+        }
+        logger.warning("====================================================");
+        logger.warning("===       ERROR REPORT SIMPLEMACHINES END.       ===");
+        logger.warning("====================================================");
+    }
 
     @Override
     public void onEnable() {
@@ -74,14 +100,6 @@ public class SimpleMachines extends JavaPlugin {
         if (dataBaseBuild != null) dataBaseBuild.close();
     }
 
-    private List<BluePrintLoader> findLoaders() {
-        List<BluePrintLoader> bluePrintLoaders = new ArrayList<>();
-        bluePrintLoaders.add(new SolarLoader(random));
-        bluePrintLoaders.add(new IngredientLoader(random));
-        bluePrintLoaders.add(new FuelLoader(random));
-        return bluePrintLoaders;
-    }
-
     public boolean startFactories() {
         File file = new File(getDataFolder(), "book.txt");
 
@@ -98,6 +116,9 @@ public class SimpleMachines extends JavaPlugin {
             return false;
         }
 
+        itemFactory = new ItemFactory();
+        customItems = itemFactory.create(config);
+
         return true;
     }
 
@@ -110,7 +131,7 @@ public class SimpleMachines extends JavaPlugin {
             bluePrintService = new BluePrintService(bluePrints, bookFactory);
             machineDao = new MachineDaoSQL(dataBaseBuild, bluePrintService);
             chunkIDService = new ChunkIDService((ChunkIDDao) machineDao);
-            machineService = new MachineService(machineDao, bluePrintService, chunkIDService, config);
+            machineService = new MachineService(machineDao, chunkIDService);
 
         } catch (DataBaseException e) {
             ERROR("Could not load the database. Something is wrong! The plugin will be disabled", e.getStackTrace());
@@ -118,6 +139,15 @@ public class SimpleMachines extends JavaPlugin {
             return false;
         }
         return true;
+    }
+
+    private List<BluePrintLoader> findLoaders() {
+        List<BluePrintLoader> bluePrintLoaders = new ArrayList<>();
+        bluePrintLoaders.add(new SolarLoader(random, customItems));
+        bluePrintLoaders.add(new IngredientLoader(random, customItems));
+        bluePrintLoaders.add(new FuelLoader(random, customItems));
+        bluePrintLoaders.add(new CollectorLoader(random, customItems));
+        return bluePrintLoaders;
     }
 
     private boolean setupEconomy() {
@@ -139,20 +169,21 @@ public class SimpleMachines extends JavaPlugin {
     }
 
     private void startControllers() {
-        machineController = new MachineController(machineService, random);
+        machineController = new MachineController(machineService);
         bluePrintController = new BluePrintController(machineService, bluePrintService);
     }
 
     private void startDefaults() {
         getServer().getScheduler().runTaskTimer(this, bluePrintController, 5, 5);
         getServer().getScheduler().runTaskTimer(this, machineController, 20, 20);
-        getServer().getPluginManager().registerEvents(new GlobalListener(bluePrintController, bluePrintService, machineService), this);
+        getServer().getPluginManager().registerEvents(new GlobalListener(bluePrintController, bluePrintService, machineService, language), this);
     }
 
     private void startCommandManager() {
-        Commands commands = new Commands(bluePrintService, economy, language);
+        Commands commands = new Commands(bluePrintService, economy, customItems, language);
         CommandController commandController = new CommandController(commands, language);
         getCommand("machines").setExecutor(commandController);
+        getCommand("customitem").setExecutor(commandController);
     }
 
     private void checkForUpdates() {
@@ -193,27 +224,6 @@ public class SimpleMachines extends JavaPlugin {
         } catch (Exception e) {
             getLogger().info("Can't check for updates...");
         }
-    }
-
-    public static void ERROR(String message) {
-        ERROR(message, null);
-    }
-
-    public static void ERROR(String message, StackTraceElement[] stackTraceElements) {
-        logger.warning("");
-        logger.warning("");
-        logger.warning("====================================================");
-        logger.warning("===          ERROR REPORT SIMPLEMACHINES:        ===");
-        logger.warning("====================================================");
-        logger.warning("= MESSAGE => ");
-        for (String string : message.split("\n")) logger.warning(string);
-        if (stackTraceElements != null) {
-            logger.warning("StackTrace: ");
-            for (StackTraceElement element : stackTraceElements) logger.warning(element.toString());
-        }
-        logger.warning("====================================================");
-        logger.warning("===       ERROR REPORT SIMPLEMACHINES END.       ===");
-        logger.warning("====================================================");
     }
 
     private void copy(InputStream in, File file) {

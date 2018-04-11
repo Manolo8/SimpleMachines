@@ -45,7 +45,7 @@ public class CommandController implements CommandExecutor {
         String command = cmnd.getName().toLowerCase();
 
         if (args.length == 0) {
-            sendHelp(player);
+            sendHelp(player, command);
             return true;
         }
 
@@ -81,15 +81,18 @@ public class CommandController implements CommandExecutor {
                 e.printStackTrace();
             }
         }
-        sendHelp(player);
+        sendHelp(player, command);
         return true;
     }
 
-    public void sendHelp(Player player) {
+    public void sendHelp(Player player, String command) {
         StringBuilder builder = new StringBuilder();
 
         for (Method method : methods) {
-            builder.append(language.getString(method.getAnnotation(CommandMapping.class).usage())).append("\n");
+            CommandMapping mapping = method.getAnnotation(CommandMapping.class);
+
+            if (command.equals(mapping.command()))
+                builder.append(language.getString(mapping.usage())).append("\n");
         }
 
         player.sendMessage(builder.toString());

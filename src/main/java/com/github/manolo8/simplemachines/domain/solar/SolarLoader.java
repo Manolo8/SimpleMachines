@@ -8,12 +8,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class SolarLoader extends BluePrintLoader<SolarBluePrint, SolarDesign, Producer<Product>> {
 
-    public SolarLoader(Random random) {
-        super(random);
+    public SolarLoader(Random random, Map<String, ItemStack> map) {
+        super(random, map);
     }
 
     @Override
@@ -37,6 +38,7 @@ public class SolarLoader extends BluePrintLoader<SolarBluePrint, SolarDesign, Pr
         solarBluePrint.setFuelling(fuelling);
         solarBluePrint.setProducer(producer);
         solarBluePrint.setBuildCost(buildCost);
+        solarBluePrint.setRandom(random);
 
         return solarBluePrint;
     }

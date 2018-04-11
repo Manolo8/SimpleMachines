@@ -12,7 +12,7 @@ public final class Config {
 
     public boolean REMOVE_MACHINE_WRONG;
     private final FileConfiguration config;
-    private final double _VERSION = 1.2;
+    private final double _VERSION = 1.3;
 
     public Config(SimpleMachines plugin) {
         plugin.saveDefaultConfig();
@@ -21,7 +21,7 @@ public final class Config {
             File file = new File(plugin.getDataFolder(), "config.yml");
             file.renameTo(new File(plugin.getDataFolder(), "oldConfig.yml"));
             file.delete();
-            File book = new File(plugin.getDataFolder(), "book.txt");
+            File book = new File(plugin.getDataFolder(), "book-pt.txt");
             book.renameTo(new File(plugin.getDataFolder(), "oldBook.txt"));
             book.delete();
             plugin.saveDefaultConfig();

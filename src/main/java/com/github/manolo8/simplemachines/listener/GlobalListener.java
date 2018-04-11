@@ -1,6 +1,8 @@
 package com.github.manolo8.simplemachines.listener;
 
+import com.github.manolo8.simplemachines.Language;
 import com.github.manolo8.simplemachines.controller.BluePrintController;
+import com.github.manolo8.simplemachines.domain.collector.CollectorMachine;
 import com.github.manolo8.simplemachines.model.Machine;
 import com.github.manolo8.simplemachines.service.BluePrintService;
 import com.github.manolo8.simplemachines.service.MachineService;
@@ -18,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -35,13 +38,16 @@ public class GlobalListener implements Listener {
     private BluePrintController bluePrintController;
     private BluePrintService bluePrintService;
     private MachineService machineService;
+    private Language language;
 
     public GlobalListener(BluePrintController bluePrintController,
                           BluePrintService bluePrintService,
-                          MachineService machineService) {
+                          MachineService machineService,
+                          Language language) {
         this.bluePrintController = bluePrintController;
         this.bluePrintService = bluePrintService;
         this.machineService = machineService;
+        this.language = language;
     }
 
     @EventHandler
@@ -112,12 +118,23 @@ public class GlobalListener implements Listener {
 
         if (stack.getType() != Material.GOLD_PICKAXE) {
             e.setCancelled(true);
-            player.sendMessage("§cUse uma §apicareta de ouro§c para destruir a máquina!");
+            player.sendMessage(language.getString("machine.break.message"));
             return;
         }
 
         machineService.deleteMachine(machine);
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void blockGrowEvent(BlockGrowEvent event) {
+
+        CollectorMachine machine = machineService.getCollectorMachine(event.getBlock());
+
+        if (machine == null) return;
+
+        machine.checkBlock(event.getBlock(), event.getNewState());
+    }
+
 
     @EventHandler
     public void chest(InventoryMoveItemEvent event) {

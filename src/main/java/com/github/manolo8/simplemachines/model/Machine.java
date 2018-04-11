@@ -3,7 +3,6 @@ package com.github.manolo8.simplemachines.model;
 import com.github.manolo8.simplemachines.utils.InventoryUtils;
 import com.github.manolo8.simplemachines.utils.SimpleLocation;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -89,7 +88,7 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
         this.chunkZ = chunkZ;
     }
 
-    public Producer getProducer() {
+    public P getProducer() {
         return producer;
     }
 
@@ -151,6 +150,14 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
         return working;
     }
 
+    public void setWorking(boolean working) {
+        this.working = working;
+
+        Block block = getBase().getBlock(world);
+        if (working) block.setType(Material.LAVA);
+        else block.setType(Material.WATER);
+    }
+
     public boolean isWrong() {
         return wrong;
     }
@@ -163,13 +170,13 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
         return changed;
     }
 
-    public void setChanged(boolean changed) {
-        this.changed = changed;
-    }
-
     //===============ENCAPSULATION===============
 
     //===============METHODS===============
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
 
     public boolean matchChunk(int x, int z) {
         return this.chunkX == x && this.chunkZ == z;
@@ -193,15 +200,6 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
         block.getWorld().dropItem(block.getLocation(), getBluePrint().getBook());
     }
 
-
-    public void setWorking(boolean working) {
-        this.working = working;
-
-        Block block = getBase().getBlock(world);
-        if (working) block.setType(Material.LAVA);
-        else block.setType(Material.WATER);
-    }
-
     public boolean isValid() {
         if (base == null || world == null || bluePrint == null) return false;
 
@@ -222,7 +220,7 @@ public abstract class Machine<T extends Product, P extends Producer<T>> {
 
         if (inventory == null) return;
 
-        setFull(InventoryUtils.isFull(inventory, current.getItemStack()));
+        setFull(InventoryUtils.isFull(inventory, current == null ? null : current.getItemStack()));
     }
 
     protected boolean checkStage() {

@@ -39,6 +39,7 @@ public class BluePrintDaoImpl implements BluePrintDao {
                 bluePrint.setName(name);
                 bluePrints.add(bluePrint);
             } catch (Exception e) {
+                e.printStackTrace();
                 SimpleMachines.ERROR("Cant find machine with name " + name + "\n probably you make a wrong configuration!");
             }
         }

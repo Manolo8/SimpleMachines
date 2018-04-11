@@ -40,6 +40,12 @@ public class SimpleLocation implements Cloneable {
                 && (x >= this.x - s && x <= this.x + s);
     }
 
+    public boolean isInArea(int x, int y, int z, int XZ, int Y) {
+        return (y >= this.y - Y && y <= this.y + Y)
+                && (z >= this.z - XZ && z <= this.z + XZ)
+                && (x >= this.x - XZ && x <= this.x + XZ);
+    }
+
     public Block getBlock(UUID world) {
         return getBlock(Bukkit.getWorld(world));
     }

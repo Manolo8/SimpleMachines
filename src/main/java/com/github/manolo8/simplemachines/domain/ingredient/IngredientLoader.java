@@ -11,16 +11,18 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class IngredientLoader extends BluePrintLoader<FuelBluePrint, IngredientDesign, IngredientProducer> {
 
-    public IngredientLoader(Random random) {
-        super(random);
+    public IngredientLoader(Random random, Map<String, ItemStack> map) {
+        super(random, map);
     }
 
     @Override
     public FuelBluePrint load(ConfigurationSection section) {
+
         FuelBluePrint fuelBluePrint = new FuelBluePrint() {
             //Só precisa dar override nisso que é gg '-'
             @Override
@@ -53,6 +55,7 @@ public class IngredientLoader extends BluePrintLoader<FuelBluePrint, IngredientD
         fuelBluePrint.setFuelling(fuelling);
         fuelBluePrint.setProducer(producer);
         fuelBluePrint.setBuildCost(buildCost);
+        fuelBluePrint.setRandom(random);
 
         return fuelBluePrint;
     }

@@ -76,21 +76,34 @@ public class BookFactory {
         builder.setLength(0);
 
         //Consertar isso depois... '-'
+        System.out.println(bluePrint.getSuper());
 
-        if (bluePrint.getSuper().equals("ingredient")) {
-            Replace productionFormatter = formatters.get("production_ingredient");
-            for (Product product : bluePrint.getProducer().getProducts()) {
-                builder.append(productionFormatter
-                        .setValue("material", getName(product.getItemStack()))
-                        .setValue("with", getName(((IngredientProduct) product).getIngredient()))
-                        .setValue("ticks", product.getCost()));
+        switch (bluePrint.getSuper()) {
+            case "ingredient": {
+                Replace productionFormatter = formatters.get("production_ingredient");
+                for (Product product : bluePrint.getProducer().getProducts()) {
+                    builder.append(productionFormatter
+                            .setValue("material", getName(product.getItemStack()))
+                            .setValue("with", getName(((IngredientProduct) product).getIngredient()))
+                            .setValue("ticks", product.getCost()));
+                }
+                break;
             }
-        } else {
-            Replace productionFormatter = formatters.get("production_fuel");
-            for (Product product : bluePrint.getProducer().getProducts()) {
-                builder.append(productionFormatter
-                        .setValue("material", getName(product.getItemStack()))
-                        .setValue("ticks", product.getCost()));
+            case "collector":
+                Replace collectFormatter = formatters.get("collect");
+                for (Product product : bluePrint.getProducer().getProducts()) {
+                    builder.append(collectFormatter
+                            .setValue("item", getName(product.getItemStack())));
+                }
+                break;
+            default: {
+                Replace productionFormatter = formatters.get("production_fuel");
+                for (Product product : bluePrint.getProducer().getProducts()) {
+                    builder.append(productionFormatter
+                            .setValue("material", getName(product.getItemStack()))
+                            .setValue("ticks", product.getCost()));
+                }
+                break;
             }
         }
 

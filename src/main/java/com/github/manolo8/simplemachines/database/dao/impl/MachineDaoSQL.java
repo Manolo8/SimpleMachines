@@ -156,8 +156,6 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
                         .setValue("speed", ((FuelMachine) machine).getSpeed())
                         .setValue("burningTime", ((FuelMachine) machine).getBurningTime());
 
-            System.out.println(updateQuery);
-
             statement.executeUpdate(updateQuery.build());
 
             statement.close();
@@ -184,8 +182,6 @@ public class MachineDaoSQL implements MachineDao, ChunkIDDao {
                     updateQuery
                             .setValue("speed", ((FuelMachine) machine).getSpeed())
                             .setValue("burningTime", ((FuelMachine) machine).getBurningTime());
-
-                System.out.println(updateQuery);
 
                 statement.executeUpdate(updateQuery.build());
             }

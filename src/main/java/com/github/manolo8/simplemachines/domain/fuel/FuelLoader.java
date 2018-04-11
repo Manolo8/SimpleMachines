@@ -9,12 +9,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class FuelLoader extends BluePrintLoader<FuelBluePrint, FuelDesign, Producer<Product>> {
 
-    public FuelLoader(Random random) {
-        super(random);
+    public FuelLoader(Random random, Map<String, ItemStack> map) {
+        super(random, map);
     }
 
     @Override
@@ -38,6 +39,7 @@ public class FuelLoader extends BluePrintLoader<FuelBluePrint, FuelDesign, Produ
         fuelBluePrint.setFuelling(fuelling);
         fuelBluePrint.setProducer(producer);
         fuelBluePrint.setBuildCost(buildCost);
+        fuelBluePrint.setRandom(random);
 
         return fuelBluePrint;
     }

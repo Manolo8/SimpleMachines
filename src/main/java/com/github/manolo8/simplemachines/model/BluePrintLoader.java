@@ -7,14 +7,17 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class BluePrintLoader<T extends BluePrint, D extends Design, P extends Producer> {
 
     protected final Random random;
+    protected final Map<String, ItemStack> customItems;
 
-    public BluePrintLoader(Random random) {
+    public BluePrintLoader(Random random, Map<String, ItemStack> customItems) {
         this.random = random;
+        this.customItems = customItems;
     }
 
     public abstract T load(ConfigurationSection section);
@@ -48,23 +51,25 @@ public abstract class BluePrintLoader<T extends BluePrint, D extends Design, P e
     }
 
     /**
-     * @param name  Nome do material
-     * @param def   material caso o que seja encontrado seja inválido
+     * @param name Nome do material
+     * @param def  material caso o que seja encontrado seja inválido
      * @return o material, caso tudo esteja corredo ou o def caso algo esteja
      * incorreto
      */
     protected ItemStack getItemStack(String name, Material def) {
+        name = name.toUpperCase();
+        if (customItems.containsKey(name)) return customItems.get(name).clone();
         try {
-            Material material = Material.getMaterial(name.toUpperCase());
+            Material material = Material.getMaterial(name);
 
             if (material == null) {
-                SimpleMachines.ERROR("Material '" + name + "' is not valid");
+                SimpleMachines.ERROR("Stack '" + name + "' is not valid");
                 return new ItemStack(def);
             }
             return new ItemStack(material);
         } catch (Exception e) {
             e.printStackTrace();
-            SimpleMachines.ERROR("Material '" + name + "' is not valid");
+            SimpleMachines.ERROR("Stack '" + name + "' is not valid");
             return new ItemStack(def);
         }
     }

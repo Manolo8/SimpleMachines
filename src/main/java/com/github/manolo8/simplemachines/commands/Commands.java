@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 /**
  * @author Willian
  */
@@ -20,20 +22,23 @@ public class Commands {
     private final BluePrintService bluePrintService;
     private final Economy economy;
     private final Language language;
+    private final Map<String, ItemStack> customItems;
 
     public Commands(BluePrintService bluePrintService,
                     Economy economy,
+                    Map<String, ItemStack> customItems,
                     Language language) {
         this.bluePrintService = bluePrintService;
         this.economy = economy;
         this.language = language;
+        this.customItems = customItems;
     }
 
     @CommandMapping(command = "machine",
             subCommand = "command.machine.buy",
             args = 2,
             usage = "command.machine.buy.usage")
-    public void comprar(Player author, String[] args) {
+    public void buy(Player author, String[] args) {
         BluePrint bluePrint = bluePrintService.getBluePrint(args[1]);
 
         if (bluePrint == null) {
@@ -62,9 +67,8 @@ public class Commands {
 
     @CommandMapping(command = "machine",
             subCommand = "command.machine.list",
-            args = 1,
             usage = "command.machine.list.usage")
-    public void listar(Player author, String[] args) {
+    public void list(Player author, String[] args) {
         StringBuilder builder = new StringBuilder();
         builder.append(language.getString("command.machine.list.header")).append("\n");
 
@@ -78,4 +82,32 @@ public class Commands {
         author.sendMessage(builder.toString());
     }
 
+    @CommandMapping(command = "customitem",
+            subCommand = "command.customitem.get",
+            args = 2,
+            usage = "command.customitem.get.usage")
+    public void customItemGet(Player author, String[] args) {
+
+        ItemStack stack = customItems.get(args[1].toUpperCase());
+
+        if (stack != null) {
+            author.getInventory().addItem(stack.clone());
+            return;
+        }
+        author.sendMessage("§cItem not found.");
+    }
+
+    @CommandMapping(command = "customitem",
+            subCommand = "command.customitem.list",
+            usage = "command.customitem.list.usage")
+    public void customItemList(Player author, String[] args) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("§aCustom items:\n");
+
+        for (String str : customItems.keySet()) {
+            builder.append("§a->").append(str).append("\n");
+        }
+        author.sendMessage(builder.toString());
+    }
 }

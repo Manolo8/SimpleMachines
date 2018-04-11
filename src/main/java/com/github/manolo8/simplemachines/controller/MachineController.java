@@ -3,17 +3,13 @@ package com.github.manolo8.simplemachines.controller;
 import com.github.manolo8.simplemachines.model.Machine;
 import com.github.manolo8.simplemachines.service.MachineService;
 
-import java.util.Random;
-
 public class MachineController implements Runnable {
 
     private MachineService machineService;
-    private Random random;
     private long tick;
 
-    public MachineController(MachineService machineService, Random random) {
+    public MachineController(MachineService machineService) {
         this.machineService = machineService;
-        this.random = random;
         this.tick = 20;
     }
 
@@ -40,7 +36,7 @@ public class MachineController implements Runnable {
             //Iremos usar eventos para checar se ela pode
             //Voltar a funcionar
             if (!machine.isWorking()) {
-                if(machine.isChanged()) {
+                if (machine.isChanged()) {
                     machine.setChanged(false);
                     machine.canWork();
                 }

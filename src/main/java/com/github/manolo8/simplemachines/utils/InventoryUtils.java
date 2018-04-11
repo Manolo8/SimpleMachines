@@ -4,7 +4,6 @@ import com.github.manolo8.simplemachines.domain.fuel.Fuel;
 import com.github.manolo8.simplemachines.domain.fuel.Fuelling;
 import com.github.manolo8.simplemachines.domain.ingredient.IngredientProducer;
 import com.github.manolo8.simplemachines.domain.ingredient.IngredientProduct;
-import com.github.manolo8.simplemachines.model.Product;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +33,7 @@ public class InventoryUtils {
     }
 
     public static boolean isFull(Inventory inventory, ItemStack is) {
-        if (is == null) return false;
+        if (is == null) is = new ItemStack(Material.AIR);
 
         int stackSize = is.getMaxStackSize();
 

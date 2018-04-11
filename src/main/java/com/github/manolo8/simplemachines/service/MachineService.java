@@ -1,13 +1,14 @@
 package com.github.manolo8.simplemachines.service;
 
-import com.github.manolo8.simplemachines.Config;
 import com.github.manolo8.simplemachines.SimpleMachines;
 import com.github.manolo8.simplemachines.database.dao.MachineDao;
+import com.github.manolo8.simplemachines.domain.collector.CollectorMachine;
 import com.github.manolo8.simplemachines.model.Machine;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,20 +17,16 @@ import java.util.List;
 public class MachineService {
 
     private MachineDao machineDao;
-    private BluePrintService bluePrintService;
     private ChunkIDService chunkIDService;
     private List<Machine> machines;
-    private Config config;
+    private List<CollectorMachine> collectorMachines;
 
     public MachineService(MachineDao machineDao,
-                          BluePrintService bluePrintService,
-                          ChunkIDService chunkIDService,
-                          Config config) {
+                          ChunkIDService chunkIDService) {
         this.machineDao = machineDao;
-        this.bluePrintService = bluePrintService;
         this.chunkIDService = chunkIDService;
         this.machines = new ArrayList<>();
-        this.config = config;
+        this.collectorMachines = new ArrayList<>();
         init();
     }
 
@@ -45,6 +42,10 @@ public class MachineService {
         return machines;
     }
 
+    public List<CollectorMachine> getCollectorMachines() {
+        return collectorMachines;
+    }
+
     public Machine getMachine(Location location) {
         return getMachine(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
@@ -57,10 +58,36 @@ public class MachineService {
         return null;
     }
 
+    public void loadedMachine(Machine machine) {
+        machines.add(machine);
+
+        if (machine instanceof CollectorMachine) {
+            collectorMachines.add((CollectorMachine) machine);
+        }
+    }
+
+    public void unloadedMachine(Machine machine) {
+        machineDao.saveMachine(machine);
+
+        if (machine instanceof CollectorMachine) {
+            collectorMachines.remove(machine);
+        }
+
+        Iterator<Machine> i = machines.iterator();
+
+        while (i.hasNext()) {
+            Machine loop = i.next();
+            if (loop.equals(machine)) {
+                i.remove();
+                break;
+            }
+        }
+    }
+
     public void createNewMachine(Machine machine) {
         if (!machine.isValid()) return;
         machineDao.saveNewMachine(machine);
-        machines.add(machine);
+        loadedMachine(machine);
         machine.setChanged(true);
     }
 
@@ -81,7 +108,7 @@ public class MachineService {
         for (Machine machine : toLoad) {
 
             if (machine.isValid()) {
-                machines.add(machine);
+                loadedMachine(machine);
                 machine.setChanged(true);
                 continue;
             }
@@ -100,16 +127,22 @@ public class MachineService {
 
     public void unloadFromChunk(Chunk chunk) {
         if (!chunkIDService.hasMachineOnChunk(chunk)) return;
-        Iterator<Machine> i = machines.iterator();
 
         World world = chunk.getWorld();
-        while (i.hasNext()) {
-            Machine machine = i.next();
+
+        for (Machine machine : machines) {
             if (machine.matchChunk(chunk.getX(), chunk.getZ())
                     && machine.getWorld().equals(world)) {
-                i.remove();
-                machineDao.saveMachine(machine);
+                unloadedMachine(machine);
             }
         }
+    }
+
+    public CollectorMachine getCollectorMachine(Block block) {
+        for(CollectorMachine machine : collectorMachines) {
+            if(machine.isInArea(block) && machine.isWorking()) return machine;
+        }
+
+        return null;
     }
 }
